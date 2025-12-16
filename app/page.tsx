@@ -2,7 +2,8 @@
 
 import Repository from "@/components/Respository";
 import { SearchBar } from "@/components/SearchBar";
-import { searchRepositories } from "@/services/githubService";
+import { SortFilter } from "@/components/SortFilter";
+import { fetchRepositories } from "@/services/githubService";
 import Image from "next/image";
 import { useState } from "react";
 import Loading from "./loading";
@@ -10,22 +11,36 @@ import Loading from "./loading";
 export default function Home() {
   const [repositories, setRepositories] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
+  const [sortBy, setSortBy] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const searchRepositories = async (query: string, page = 1, sort = "stars") => {
+    setLoading(true);
+    try {
+      const data = await fetchRepositories(query, page, sort);
+      setRepositories(data.items);
+      setTotalCount(data.total_count);
+    } catch (error) {
+      console.error("Error searching repositories:", error); // TODO: handle error properly
+    } finally {
+      setLoading(false);
+    }
+  }
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setLoading(true);
-    searchRepositories(query).then((data) => {
-      setRepositories(data.items);
-    }).catch((error) => {
-      console.error("Error searching repositories:", error); // TODO: handle error properly
-    }).finally(() => setLoading(false));
+    searchRepositories(query, 1, sortBy);
   };
+
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort)
+    searchRepositories(searchQuery, 1, sort)
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <header className="mb-12 text-center">
+        <header className="mb-6 text-center">
           <div className="flex align-center gap-3 mb-4 align-middle">
             <Image src="/github.svg" alt="GitHub Logo" width={24} height={24} />
             <SearchBar onSearch={handleSearch} />
@@ -44,6 +59,16 @@ export default function Home() {
         {/* Loading State  */}
         {loading && <Loading />}
 
+        {/* Results Header */}
+        {!loading && searchQuery && (
+          <div className="mb-6 flex items-center justify-between">
+            <div className="text-muted-foreground">
+              <span className="text-white font-bold">{totalCount.toLocaleString()}</span>
+              {totalCount > 0 && <span> {totalCount === 1 ? "repository" : "repositories"} found</span>}
+            </div>
+            {totalCount > 0 && <SortFilter currentSort={sortBy} onSortChange={handleSortChange} />}
+          </div>
+        )}
         {/* Results */}
         {!loading && repositories.length > 0 && repositories.map((repo) => <Repository key={repo.id} repository={repo} />)}
 

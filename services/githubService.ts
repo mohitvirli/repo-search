@@ -1,6 +1,6 @@
 
 const BASE_URL = "https://api.github.com";
-
+const PER_PAGE = 10;
 /**
  *
  * @param query
@@ -9,10 +9,10 @@ const BASE_URL = "https://api.github.com";
  * @param signal
  * @returns
  */
-export async function searchRepositories(
+export async function fetchRepositories(
   query: string,
   page = 1,
-  perPage = 10,
+  sort = '',
   signal?: AbortSignal
 ): Promise<any> { // TODO:
   if (!query) {
@@ -22,7 +22,8 @@ export async function searchRepositories(
   const params = new URLSearchParams({
     q: query,
     page: String(page),
-    per_page: String(perPage),
+    per_page: String(PER_PAGE),
+    sort: String(sort ?? ''),
   });
 
   const response = await fetch(`${BASE_URL}/search/repositories?${params.toString()}`,
