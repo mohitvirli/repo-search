@@ -50,6 +50,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `services/` - GitHub API service layer
 - `types/` - TypeScript type definitions
 
+## Demo Images
+<img width="3970" height="2808" alt="image" src="https://github.com/user-attachments/assets/4b4053fd-8c2b-42be-b76f-7f28bb6d3e76" />
+<img width="3970" height="2808" alt="image" src="https://github.com/user-attachments/assets/13e44ea8-f1e7-44d8-b317-f3f17dda0bf4" />
+
 ## Techstack
 - [Next.js 16](https://nextjs.org) - React framework with App Router
 - [React 19](https://react.dev) - UI library
