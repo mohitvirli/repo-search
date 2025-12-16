@@ -9,11 +9,12 @@
  */
 interface PaginationProps {
   currentPage: number
-  totalPages: number
+  totalCount: number
   onPageChange: (page: number) => void
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export function Pagination({ currentPage, totalCount, onPageChange }: PaginationProps) {
+  const totalPages = Math.ceil(totalCount / 10);
   const getPageNumbers = () => {
     const pages: (number | string)[] = []
     const showEllipsis = totalPages > 7
@@ -44,6 +45,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
     }
 
     return pages
+  }
+
+  if (totalPages <= 1) {
+    return null;
   }
 
   return (

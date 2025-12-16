@@ -6,8 +6,9 @@ import { SearchBar } from "@/components/SearchBar";
 import { SortFilter } from "@/components/SortFilter";
 import { fetchRepositories } from "@/services/githubService";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "./loading";
+
 
 export default function Home() {
   const [repositories, setRepositories] = useState<any[]>([]);
@@ -17,33 +18,46 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const searchRepositories = async (query: string, page = 1, sort = "stars") => {
-    setLoading(true);
-    try {
-      const data = await fetchRepositories(query, page, sort);
-      setRepositories(data.items);
-      setTotalCount(data.total_count);
-    } catch (error) {
-      console.error("Error searching repositories:", error); // TODO: handle error properly
-    } finally {
-      setLoading(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await fetchRepositories(searchQuery, currentPage, sortBy, controller.signal);
+
+        setRepositories(data.items);
+        setTotalCount(data.total_count);
+      } catch (err) {
+        if ((err as any).name !== "AbortError") {
+          console.error("Error fetching repositories", err);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
-  }
+
+    load();
+
+    return () => controller.abort();
+  }, [searchQuery, currentPage, sortBy]);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    searchRepositories(query, 1, sortBy);
+    setCurrentPage(1);
   };
 
   const handleSortChange = (sort: string) => {
-    setSortBy(sort)
-    searchRepositories(searchQuery, 1, sort)
-  }
+    setSortBy(sort);
+    setCurrentPage(1);
+  };
 
   const onPageChange = (page: number) => {
-    if (page === currentPage) return;
-    setCurrentPage(page);
-    searchRepositories(searchQuery, page, sortBy);
-  }
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,9 +104,9 @@ export default function Home() {
           )}
         </div>
         {/* Pagination */}
-        {!loading && totalCount > 0 && repositories.length > 0 && (
+        {!loading && searchQuery && (
           <div className="mt-6">
-            <Pagination currentPage={currentPage} totalPages={Math.ceil(totalCount / 10)} onPageChange={onPageChange} />
+            <Pagination currentPage={currentPage} totalCount={totalCount} onPageChange={onPageChange} />
           </div>
         )}
       </div>
