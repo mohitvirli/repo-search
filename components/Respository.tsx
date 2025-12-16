@@ -1,6 +1,10 @@
 import { DEFAULT_COLOR, LANGUAGE_COLORS_MAP } from "@/constants/languageColors";
 import Image from "next/image";
 
+const formatter = new Intl.NumberFormat('en-US', {
+  notation: 'compact',
+  compactDisplay: 'short'
+})
 
 export default function Repository({ repository }: { repository: any }) {
   const color = LANGUAGE_COLORS_MAP[repository.language] || DEFAULT_COLOR;
@@ -29,8 +33,8 @@ export default function Repository({ repository }: { repository: any }) {
             <span>{repository.language}</span>
           </span>
         )}
-        <span className="mr-4 flex"><Image src="/star.svg" alt="Star" width={16} height={16} className="mr-1" /> {repository.stargazers_count}</span>
-        <span className="flex"><Image src="/fork.svg" alt="Fork" width={16} height={16} className="mr-1" /> {repository.forks_count}</span>
+        <span className="mr-4 flex"><Image src="/star.svg" alt="Star" width={16} height={16} className="mr-1" /> {formatter.format(repository.stargazers_count)}</span>
+        <span className="flex"><Image src="/fork.svg" alt="Fork" width={16} height={16} className="mr-1" /> {formatter.format(repository.forks_count)}</span>
       </div>
     </div>
   );
