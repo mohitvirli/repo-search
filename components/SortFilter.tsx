@@ -1,11 +1,18 @@
 "use client"
 
+/**
+ * SortFilter component props interface
+ */
 interface SortFilterProps {
   currentSort: string
   onSortChange: (sort: string) => void
 }
 
-const sortOptions = [
+/**
+ * Available sort options for GitHub repositories. Added what was available
+ * Can be modified as per requirement.
+ */
+const sortOptions: { value: string; label: string }[] = [
   { value: "", label: "Best Match" },
   { value: "stars", label: "Most Stars" },
   { value: "forks", label: "Most Forks" },

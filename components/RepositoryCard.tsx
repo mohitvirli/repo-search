@@ -1,13 +1,21 @@
-import { DEFAULT_COLOR, LANGUAGE_COLORS_MAP } from "@/constants/languageColors";
+import { DEFAULT_LANGUAGE_COLOR, LANGUAGE_COLORS_MAP } from "@/constants/languageColors";
+import Repository from "@/types/repository";
 import Image from "next/image";
 
+/**
+ * Utility to format numbers in a compact form (e.g., 1.2K, 3.4M).
+ */
 const formatter = new Intl.NumberFormat('en-US', {
   notation: 'compact',
   compactDisplay: 'short'
 })
 
-export default function Repository({ repository }: { repository: any }) {
-  const color = LANGUAGE_COLORS_MAP[repository.language] || DEFAULT_COLOR;
+/**
+ * Component to display a GitHub repository card with details like name, owner,
+ * stars, forks, and language.
+ */
+export function RepositoryCard({ repository }: { repository: Repository }) {
+  const color = LANGUAGE_COLORS_MAP[repository.language] || DEFAULT_LANGUAGE_COLOR;
 
   return (
     <div className="p-4 border border-neutral-600 rounded-lg mb-4 bg-neutral-900 hover:bg-accent transition-colors">

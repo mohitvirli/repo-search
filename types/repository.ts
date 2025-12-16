@@ -1,3 +1,6 @@
+/**
+ * Represents a GitHub repository. Used only for necessary fields.
+ */
 export default interface Repository {
   id: number;
   name: string;
@@ -6,4 +9,10 @@ export default interface Repository {
   description: string | null;
   stargazers_count: number;
   forks_count: number;
+  language: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+    html_url: string;
+  };
 }

@@ -5,32 +5,43 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+/**
+ * Search bar props interface
+ */
 interface SearchBarProps {
   onSearch: (query: string) => void
 }
 
+/**
+ * SearchBar component for querying GitHub repositories.
+ */
 export function SearchBar({ onSearch }: SearchBarProps) {
-  const searcghParams = useSearchParams();
-  const [query, setQuery] = useState(searcghParams.get("q") ?? "");
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Handle form submission
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     onSearch(query)
   }
 
+  // Clear the search input
   const clearQuery = () => {
     setQuery("")
     onSearch("")
   };
 
   // Listen to `/` for focusing the search input
+  // and `Escape` for blurring the input
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "/") {
         e.preventDefault();
         inputRef.current?.focus();
       }
+
       if (e.key === "Escape") {
         inputRef.current?.blur();
       }

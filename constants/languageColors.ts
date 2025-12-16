@@ -1,6 +1,12 @@
 
-export const DEFAULT_COLOR = "#9ca3af";
+/**
+ * Default color for languages not listed in the map
+ */
+export const DEFAULT_LANGUAGE_COLOR = "#9ca3af";
 
+/**
+ * Mapping of programming languages to their representative colors.
+ */
 export const LANGUAGE_COLORS_MAP: Record<string, string> = {
   TypeScript: "#3178c6",
   JavaScript: "#f1e05a",

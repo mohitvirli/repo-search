@@ -1,24 +1,22 @@
 "use client";
 
-import { Pagination } from "@/components/Pagination";
-import Repository from "@/components/Respository";
-import { SearchBar } from "@/components/SearchBar";
-import { SortFilter } from "@/components/SortFilter";
+import { Pagination, RepositoryCard, SearchBar, SortFilter } from "@/components";
 import { useGithubRepositories } from "@/hooks/useGithubRepositories";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "./loading";
 
-
-
 export default function Home() {
+  // Get navigation utilities
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  // Extract URL query parameters for search functionality
   const searchQuery = searchParams.get("q") ?? "";
   const currentPage = Number(searchParams.get("page") ?? 1);
   const sortBy = searchParams.get("sort") ?? "stars";
 
+  // Fetch repositories from GitHub API based on search parameters
   const {
     data,
     isLoading,
@@ -27,10 +25,12 @@ export default function Home() {
     error,
   } = useGithubRepositories(searchQuery, currentPage, sortBy);
 
+  // Extract repository list and total count from API response
   const repositories = data?.items ?? [];
   const totalCount = data?.total_count ?? 0;
   const loading = isLoading || isFetching;
 
+  // Handle search action triggered from SearchBar component
   const handleSearch = (query: string) => {
     if (!query) {
       router.push(`/`);
@@ -40,10 +40,12 @@ export default function Home() {
     router.push(`/?q=${encodeURIComponent(query)}&page=1&sort=${sortBy}`);
   };
 
+  // Handle sort option change from SortFilter component
   const handleSortChange = (sort: string) => {
     router.push(`/?q=${searchQuery}&page=1&sort=${sort}`);
   };
 
+  // Handle page change from Pagination component
   const onPageChange = (page: number) => {
     if (page !== currentPage) {
       router.push(`/?q=${searchQuery}&page=${page}&sort=${sortBy}`);
@@ -85,7 +87,7 @@ export default function Home() {
           {loading && <Loading />}
 
           {/* Results */}
-          {!loading && repositories.length > 0 && repositories.map((repo) => <Repository key={repo.id} repository={repo} />)}
+          {!loading && repositories.length > 0 && repositories.map((repo) => <RepositoryCard key={repo.id} repository={repo} />)}
 
           {/* No Results */}
           {!loading && searchQuery && !isError&& repositories.length === 0 && (
