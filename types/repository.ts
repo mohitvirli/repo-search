@@ -15,4 +15,5 @@ export default interface Repository {
     avatar_url: string;
     html_url: string;
   };
+  updated_at: string;
 }

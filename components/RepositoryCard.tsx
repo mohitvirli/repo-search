@@ -1,6 +1,10 @@
 import { DEFAULT_LANGUAGE_COLOR, LANGUAGE_COLORS_MAP } from "@/constants/languageColors";
 import Repository from "@/types/repository";
 import Image from "next/image";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 /**
  * Utility to format numbers in a compact form (e.g., 1.2K, 3.4M).
@@ -43,6 +47,7 @@ export function RepositoryCard({ repository }: { repository: Repository }) {
         )}
         <span className="mr-4 flex"><Image src="/star.svg" alt="Star" width={16} height={16} className="mr-1" /> {formatter.format(repository.stargazers_count)}</span>
         <span className="flex"><Image src="/fork.svg" alt="Fork" width={16} height={16} className="mr-1" /> {formatter.format(repository.forks_count)}</span>
+        <span className="text-xs text-neutral-500 ml-auto">Updated {dayjs(repository.updated_at).fromNow()}</span>
       </div>
     </div>
   );
