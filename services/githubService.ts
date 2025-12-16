@@ -46,7 +46,13 @@ export async function fetchRepositories(
     if (response.status === 403) {
       throw new Error("Rate limit exceeded");
     }
-    throw new Error("Failed to fetch repositories");
+
+    const errorData = await response.json();
+    if (errorData && errorData.message) {
+      throw new Error(errorData.message);
+    }
+
+    throw new Error(response.statusText || "Failed to fetch repositories");
   }
 
   return response.json();

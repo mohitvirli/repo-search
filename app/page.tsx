@@ -23,6 +23,8 @@ export default function Home() {
     data,
     isLoading,
     isFetching,
+    isError,
+    error,
   } = useGithubRepositories(searchQuery, currentPage, sortBy);
 
   const repositories = data?.items ?? [];
@@ -30,6 +32,11 @@ export default function Home() {
   const loading = isLoading || isFetching;
 
   const handleSearch = (query: string) => {
+    if (!query) {
+      router.push(`/`);
+      return;
+    }
+
     router.push(`/?q=${encodeURIComponent(query)}&page=1&sort=${sortBy}`);
   };
 
@@ -48,7 +55,7 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 max-w-6xl flex flex-col h-screen">
         <header className="mb-6 text-center">
           <div className="flex align-center gap-3 mb-4 align-middle">
-            <Image src="/github.svg" alt="GitHub Logo" width={24} height={24} />
+            <a href="/" className="flex"><Image src="/github.svg" alt="GitHub Logo" width={24} height={24} /></a>
             <SearchBar onSearch={handleSearch} />
           </div>
         </header>
@@ -81,10 +88,26 @@ export default function Home() {
           {!loading && repositories.length > 0 && repositories.map((repo) => <Repository key={repo.id} repository={repo} />)}
 
           {/* No Results */}
-          {!loading && searchQuery && repositories.length === 0 && (
+          {!loading && searchQuery && !isError&& repositories.length === 0 && (
             <div className="text-center py-16">
               <h3 className="text-2xl font-semibold mb-2">No repositories found</h3>
               <p className="text-muted-foreground">Try a different search term.</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {!loading && isError && (
+             <div className="text-center py-16">
+              <h3 className="text-2xl font-semibold mb-2">Something went wrong</h3>
+              <p className="text-muted-foreground mb-4">
+                {(error as Error).message || "Failed to load repositories"}
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 rounded bg-blue-400 cursor-pointer text-white"
+              >
+                Retry
+              </button>
             </div>
           )}
         </div>
