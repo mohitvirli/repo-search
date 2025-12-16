@@ -1,12 +1,17 @@
 # GitHub Search
 
-A modern web application for searching GitHub repositories, built with [Next.js](https://nextjs.org).
+A modern web application for searching and browsing GitHub repositories in real-time, built with [Next.js](https://nextjs.org) and powered by the GitHub REST API.
 
 ## Features
 
-- Search repositories.
-- View repository details and statistics
-- Responsive design for all devices
+- **Real-time repository search** - Search repositories by name, description, or topic
+- **Advanced filtering** - Sort by stars, forks, or recent updates
+- **Pagination support** - Browse through large result sets seamlessly
+- **Repository details** - View key metrics including stars, forks, language, and descriptions
+- **Responsive design** - Fully optimized for desktop, tablet, and mobile devices
+- **Optimized performance** - Leveraging TanStack React Query for efficient data fetching and caching
+- **Quick access** - Press `/` to focus the search bar instantly
+- **Error handling** - Graceful handling of API rate limits and errors
 
 ## Getting Started
 
@@ -39,14 +44,19 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
-- `app/` - Next.js App Router pages and components
-- `public/` - Static assets
+- `app/` - Next.js App Router with main page, layout, and styles
+- `components/` - Reusable React components (SearchBar, Repository, Pagination, SortFilter)
+- `hooks/` - Custom React hooks (useGithubRepositories)
+- `services/` - GitHub API service layer
+- `types/` - TypeScript type definitions
 
-## Tech Stack
-
-- [Next.js](https://nextjs.org) - React framework
-- [TypeScript](https://www.typescriptlang.org) - Type safety
-- [GitHub API](https://docs.github.com/en/rest) - Data source
+## Techstack
+- [Next.js 16](https://nextjs.org) - React framework with App Router
+- [React 19](https://react.dev) - UI library
+- [TypeScript](https://www.typescriptlang.org) - Type-safe JavaScript
+- [TanStack React Query](https://tanstack.com/query) - Data fetching and caching
+- [Tailwind CSS 4](https://tailwindcss.com) - Utility-first styling
+- [GitHub REST API](https://docs.github.com/en/rest) - Repository data source
 
 ## Learn More
 
