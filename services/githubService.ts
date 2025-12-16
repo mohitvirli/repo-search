@@ -1,6 +1,13 @@
+import Repository from "@/types/repository";
 
 const BASE_URL = "https://api.github.com";
 const PER_PAGE = 10;
+
+interface RepositoryResponse {
+  total_count: number;
+  items: Repository[];
+}
+
 /**
  *
  * @param query
@@ -14,7 +21,7 @@ export async function fetchRepositories(
   page = 1,
   sort = '',
   signal?: AbortSignal
-): Promise<any> { // TODO:
+): Promise<RepositoryResponse> {
   if (!query) {
     return { total_count: 0, items: [] };
   }

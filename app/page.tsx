@@ -4,44 +4,25 @@ import { Pagination } from "@/components/Pagination";
 import Repository from "@/components/Respository";
 import { SearchBar } from "@/components/SearchBar";
 import { SortFilter } from "@/components/SortFilter";
-import { fetchRepositories } from "@/services/githubService";
+import { useGithubRepositories } from "@/hooks/useGithubRepositories";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Loading from "./loading";
 
 
 export default function Home() {
-  const [repositories, setRepositories] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {
+    data,
+    isLoading,
+    isFetching,
+  } = useGithubRepositories(searchQuery, currentPage, sortBy);
 
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await fetchRepositories(searchQuery, currentPage, sortBy, controller.signal);
-
-        setRepositories(data.items);
-        setTotalCount(data.total_count);
-      } catch (err) {
-        if ((err as any).name !== "AbortError") {
-          console.error("Error fetching repositories", err);
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    load();
-
-    return () => controller.abort();
-  }, [searchQuery, currentPage, sortBy]);
+  const repositories = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const loading = isLoading || isFetching;
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
