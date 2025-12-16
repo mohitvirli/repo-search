@@ -1,15 +1,17 @@
 "use client"
 
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import Image from "next/image"
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 interface SearchBarProps {
   onSearch: (query: string) => void
 }
 
 export function SearchBar({ onSearch }: SearchBarProps) {
-  const [query, setQuery] = useState("")
+  const searcghParams = useSearchParams();
+  const [query, setQuery] = useState(searcghParams.get("q") ?? "");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSubmit = (e: FormEvent) => {

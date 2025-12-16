@@ -6,14 +6,19 @@ import { SearchBar } from "@/components/SearchBar";
 import { SortFilter } from "@/components/SortFilter";
 import { useGithubRepositories } from "@/hooks/useGithubRepositories";
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "./loading";
 
 
+
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const searchQuery = searchParams.get("q") ?? "";
+  const currentPage = Number(searchParams.get("page") ?? 1);
+  const sortBy = searchParams.get("sort") ?? "stars";
+
   const {
     data,
     isLoading,
@@ -25,18 +30,16 @@ export default function Home() {
   const loading = isLoading || isFetching;
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
+    router.push(`/?q=${encodeURIComponent(query)}&page=1&sort=${sortBy}`);
   };
 
   const handleSortChange = (sort: string) => {
-    setSortBy(sort);
-    setCurrentPage(1);
+    router.push(`/?q=${searchQuery}&page=1&sort=${sort}`);
   };
 
   const onPageChange = (page: number) => {
     if (page !== currentPage) {
-      setCurrentPage(page);
+      router.push(`/?q=${searchQuery}&page=${page}&sort=${sortBy}`);
     }
   };
 
@@ -60,11 +63,8 @@ export default function Home() {
             </div>
           )}
 
-          {/* Loading State  */}
-          {loading && <Loading />}
-
           {/* Results Header */}
-          {!loading && searchQuery && (
+          {searchQuery && repositories.length > 0 && (
             <div className="mb-6 flex items-center justify-between">
               <div className="text-muted-foreground">
                 <span className="text-white font-bold">{totalCount.toLocaleString()}</span>
@@ -73,6 +73,10 @@ export default function Home() {
               {totalCount > 0 && <SortFilter currentSort={sortBy} onSortChange={handleSortChange} />}
             </div>
           )}
+
+          {/* Loading State  */}
+          {loading && <Loading />}
+
           {/* Results */}
           {!loading && repositories.length > 0 && repositories.map((repo) => <Repository key={repo.id} repository={repo} />)}
 
@@ -85,7 +89,7 @@ export default function Home() {
           )}
         </div>
         {/* Pagination */}
-        {!loading && searchQuery && (
+        {searchQuery && (
           <div className="mt-6">
             <Pagination currentPage={currentPage} totalCount={totalCount} onPageChange={onPageChange} />
           </div>
